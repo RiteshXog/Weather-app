@@ -1,14 +1,12 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0d0d1a" />
     <title>Weather App</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap"
-        rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -24,115 +22,102 @@
 
     <div class="card">
       <div class="search">
-        <input type="text" placeholder="Enter city name…" spellcheck="false" />
-        <button><img src="search.png" /></button>
+        <input type="text" placeholder="Enter city name…" spellcheck="false" autocomplete="off" />
+        <button><img src="search.png" alt="search" /></button>
       </div>
       <div class="error"><p>⚠ Invalid City Name</p></div>
       <div class="weather">
-        <img src="rain.png" class="weather-icon" />
+        <img src="rain.png" class="weather-icon" alt="weather" />
         <h1 class="temp">22°C</h1>
         <h2 class="city">New York</h2>
         <div class="divider"></div>
         <div class="details">
           <div class="col">
-            <img src="humidity.png" />
-            <div>
-              <p class="humidity">50%</p>
-              <p>Humidity</p>
-            </div>
+            <img src="humidity.png" alt="humidity" />
+            <div><p class="humidity">50%</p><p>Humidity</p></div>
           </div>
           <div class="col">
-            <img src="wind.png" />
-            <div>
-              <p class="wind">15 km/h</p>
-              <p>Wind Speed</p>
-            </div>
+            <img src="wind.png" alt="wind" />
+            <div><p class="wind">15 km/h</p><p>Wind Speed</p></div>
           </div>
         </div>
       </div>
     </div>
 
     <script>
+      /* ── STARS ── */
       const starsEl = document.getElementById("stars");
-      for (let i = 0; i < 180; i++) {
+      for (let i = 0; i < 160; i++) {
         const s = document.createElement("div");
         s.className = "star";
-        const size = Math.random() * 2.5 + 0.5;
-        s.style.cssText = `
-          width:${size}px; height:${size}px;
-          top:${Math.random() * 100}%; left:${Math.random() * 100}%;
-          --d:${(Math.random() * 4 + 2).toFixed(1)}s;
-          animation-delay:${(Math.random() * 6).toFixed(1)}s;
-        `;
+        const sz = Math.random()*2.5+0.5;
+        s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s`;
         starsEl.appendChild(s);
       }
 
       const partEl = document.getElementById("particles");
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 22; i++) {
         const p = document.createElement("div");
         p.className = "particle";
-        p.style.cssText = `
-          left:${Math.random() * 100}%;
-          --d:${(Math.random() * 12 + 8).toFixed(1)}s;
-          --delay:${(Math.random() * 10).toFixed(1)}s;
-          opacity:0;
-        `;
+        p.style.cssText = `left:${Math.random()*100}%;--d:${(Math.random()*12+8).toFixed(1)}s;--delay:${(Math.random()*10).toFixed(1)}s`;
         partEl.appendChild(p);
       }
-      const apiKey = "298de28f5c4bed641000a076066dc242";
-      const apiUrl =
-        "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
 
+      const apiKey = "298de28f5c4bed641000a076066dc242";
+      const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
       const searchBox = document.querySelector(".search input");
       const searchBtn = document.querySelector(".search button");
       const weatherIcon = document.querySelector(".weather-icon");
+      const iconMap = { Clouds:"clouds.png", Clear:"clear.png", Rain:"rain.png", Drizzle:"drizzle.png", Mist:"mist.png", Snow:"snow.png" };
 
       async function checkweather(city) {
-        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-        if (!response.ok) {
-          document.querySelector(".error").style.display = "block";
-          document.querySelector(".weather").style.display = "none";
-        } else {
-          const data = await response.json();
-          document.querySelector(".city").innerHTML = data.name;
-          document.querySelector(".temp").innerHTML =
-            Math.round(data.main.temp) + "°C";
-          document.querySelector(".humidity").innerHTML =
-            data.main.humidity + "%";
-          document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+        if (!city.trim()) return;
+        try {
+          const res = await fetch(apiUrl + city + `&appid=${apiKey}`);
+          if (!res.ok) throw new Error();
+          const d = await res.json();
+          document.querySelector(".city").innerHTML = d.name;
+          document.querySelector(".temp").innerHTML = Math.round(d.main.temp) + "°C";
+          document.querySelector(".humidity").innerHTML = d.main.humidity + "%";
+          document.querySelector(".wind").innerHTML = d.wind.speed + " km/h";
+          weatherIcon.src = iconMap[d.weather[0].main] || "rain.png";
           document.querySelector(".weather").style.display = "block";
           document.querySelector(".error").style.display = "none";
-
-          const cond = data.weather[0].main;
-          const iconMap = {
-            Clouds: "clouds.png",
-            Clear: "clear.png",
-            Rain: "rain.png",
-            Drizzle: "drizzle.png",
-            Mist: "mist.png",
-            Snow: "snow.png",
-          };
-          weatherIcon.src = iconMap[cond] || "rain.png";
+        } catch {
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".weather").style.display = "none";
         }
       }
 
       searchBtn.addEventListener("click", () => checkweather(searchBox.value));
-      searchBox.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") checkweather(searchBox.value);
+      searchBox.addEventListener("keypress", e => {
+        if (e.key === "Enter") { searchBox.blur(); checkweather(searchBox.value); }
       });
       searchBox.addEventListener("input", () => {
         document.querySelector(".error").style.display = "none";
         document.querySelector(".weather").style.display = "none";
       });
+
+      /* ── 3D TILT ── */
       const card = document.querySelector(".card");
-      document.addEventListener("mousemove", (e) => {
-        const x = (window.innerWidth / 2 - e.pageX) / 30;
-        const y = (window.innerHeight / 2 - e.pageY) / 30;
-        card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-      });
-      document.addEventListener("mouseleave", () => {
-        card.style.transform = "";
-      });
+      const isMobile = window.matchMedia("(hover:none)").matches;
+
+      if (!isMobile) {
+        document.addEventListener("mousemove", e => {
+          const x = (window.innerWidth/2  - e.pageX) / 30;
+          const y = (window.innerHeight/2 - e.pageY) / 30;
+          card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
+        document.addEventListener("mouseleave", () => { card.style.transform = ""; });
+      } else {
+        document.addEventListener("touchmove", e => {
+          const t = e.touches[0];
+          const x = (window.innerWidth/2  - t.clientX) / 20;
+          const y = (window.innerHeight/2 - t.clientY) / 20;
+          card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        }, { passive: true });
+        document.addEventListener("touchend", () => { card.style.transform = ""; });
+      }
     </script>
   </body>
 </html>

@@ -1,12 +1,25 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <meta name="theme-color" content="#0d0d1a" />
     <title>Weather App</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -22,7 +35,12 @@
 
     <div class="card">
       <div class="search">
-        <input type="text" placeholder="Enter city name…" spellcheck="false" autocomplete="off" />
+        <input
+          type="text"
+          placeholder="Enter city name…"
+          spellcheck="false"
+          autocomplete="off"
+        />
         <button><img src="search.png" alt="search" /></button>
       </div>
       <div class="error"><p>⚠ Invalid City Name</p></div>
@@ -34,11 +52,17 @@
         <div class="details">
           <div class="col">
             <img src="humidity.png" alt="humidity" />
-            <div><p class="humidity">50%</p><p>Humidity</p></div>
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
           </div>
           <div class="col">
             <img src="wind.png" alt="wind" />
-            <div><p class="wind">15 km/h</p><p>Wind Speed</p></div>
+            <div>
+              <p class="wind">15 km/h</p>
+              <p>Wind Speed</p>
+            </div>
           </div>
         </div>
       </div>
@@ -50,8 +74,8 @@
       for (let i = 0; i < 160; i++) {
         const s = document.createElement("div");
         s.className = "star";
-        const sz = Math.random()*2.5+0.5;
-        s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*6).toFixed(1)}s`;
+        const sz = Math.random() * 2.5 + 0.5;
+        s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random() * 100}%;left:${Math.random() * 100}%;--d:${(Math.random() * 4 + 2).toFixed(1)}s;animation-delay:${(Math.random() * 6).toFixed(1)}s`;
         starsEl.appendChild(s);
       }
 
@@ -59,16 +83,24 @@
       for (let i = 0; i < 22; i++) {
         const p = document.createElement("div");
         p.className = "particle";
-        p.style.cssText = `left:${Math.random()*100}%;--d:${(Math.random()*12+8).toFixed(1)}s;--delay:${(Math.random()*10).toFixed(1)}s`;
+        p.style.cssText = `left:${Math.random() * 100}%;--d:${(Math.random() * 12 + 8).toFixed(1)}s;--delay:${(Math.random() * 10).toFixed(1)}s`;
         partEl.appendChild(p);
       }
 
       const apiKey = "298de28f5c4bed641000a076066dc242";
-      const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+      const apiUrl =
+        "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
       const searchBox = document.querySelector(".search input");
       const searchBtn = document.querySelector(".search button");
       const weatherIcon = document.querySelector(".weather-icon");
-      const iconMap = { Clouds:"clouds.png", Clear:"clear.png", Rain:"rain.png", Drizzle:"drizzle.png", Mist:"mist.png", Snow:"snow.png" };
+      const iconMap = {
+        Clouds: "clouds.png",
+        Clear: "clear.png",
+        Rain: "rain.png",
+        Drizzle: "drizzle.png",
+        Mist: "mist.png",
+        Snow: "snow.png",
+      };
 
       async function checkweather(city) {
         if (!city.trim()) return;
@@ -77,7 +109,8 @@
           if (!res.ok) throw new Error();
           const d = await res.json();
           document.querySelector(".city").innerHTML = d.name;
-          document.querySelector(".temp").innerHTML = Math.round(d.main.temp) + "°C";
+          document.querySelector(".temp").innerHTML =
+            Math.round(d.main.temp) + "°C";
           document.querySelector(".humidity").innerHTML = d.main.humidity + "%";
           document.querySelector(".wind").innerHTML = d.wind.speed + " km/h";
           weatherIcon.src = iconMap[d.weather[0].main] || "rain.png";
@@ -90,8 +123,11 @@
       }
 
       searchBtn.addEventListener("click", () => checkweather(searchBox.value));
-      searchBox.addEventListener("keypress", e => {
-        if (e.key === "Enter") { searchBox.blur(); checkweather(searchBox.value); }
+      searchBox.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          searchBox.blur();
+          checkweather(searchBox.value);
+        }
       });
       searchBox.addEventListener("input", () => {
         document.querySelector(".error").style.display = "none";
@@ -103,20 +139,34 @@
       const isMobile = window.matchMedia("(hover:none)").matches;
 
       if (!isMobile) {
-        document.addEventListener("mousemove", e => {
-          const x = (window.innerWidth/2  - e.pageX) / 30;
-          const y = (window.innerHeight/2 - e.pageY) / 30;
+        document.addEventListener("mousemove", (e) => {
+          const x = (window.innerWidth / 2 - e.pageX) / 30;
+          const y = (window.innerHeight / 2 - e.pageY) / 30;
           card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
         });
-        document.addEventListener("mouseleave", () => { card.style.transform = ""; });
+        document.addEventListener("mouseleave", () => {
+          card.style.transform = "";
+        });
       } else {
-        document.addEventListener("touchmove", e => {
-          const t = e.touches[0];
-          const x = (window.innerWidth/2  - t.clientX) / 20;
-          const y = (window.innerHeight/2 - t.clientY) / 20;
-          card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-        }, { passive: true });
-        document.addEventListener("touchend", () => { card.style.transform = ""; });
+        document.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            const x = (window.innerWidth / 2 - t.clientX) / 20;
+            const y = (window.innerHeight / 2 - t.clientY) / 20;
+            card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+          },
+          { passive: true },
+        );
+        document.addEventListener("touchend", () => {
+          card.style.transform = "";
+        });
+      }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("sw.js")
+          .then(() => console.log("SW registered"))
+          .catch((e) => console.log("SW error", e));
       }
     </script>
   </body>
